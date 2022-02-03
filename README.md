@@ -1,6 +1,6 @@
 # B-baka
 
-A simple and lightweight web framework for begginers.
+A simple and lightweight web framework for beginners.
 
 ## Config
 
@@ -11,9 +11,9 @@ There are 4 config options.
 - `hostname`
 - `port`
 
-The first two are `bool`'s, the third one is a string and the fourth an integer.
+The first two are `bool`'s, the third one is a string and the fourth is an integer.
 
-They can be change by doing the following
+They can be changed by doing the following
 
 ```py
 from baka import Config
@@ -70,7 +70,7 @@ add_render("/test" , a)
 
 ## - `render_template`
 
-### Used to convert html to bytes
+### Used to convert HTML to bytes
 
 ```py
 add_render("/" , render_template("index.html"))
