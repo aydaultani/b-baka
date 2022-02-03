@@ -25,7 +25,7 @@ Config.port = "4000"
 
 # Baka
 
-There are only 5 simple functions.
+There are only 6 simple functions.
 
 ## - `add_path`
 
@@ -86,6 +86,20 @@ add_render("/" , render_template("index.html"))
 run()
 ```
 
+## - `get_headers`
+
+### Get headers
+#### This makes it a lil complicated but it's fine.
+
+```py
+import threading
+. . . # normal code here
+th = threading.Thread(target=run)
+th.daemon = True
+th.run()
+while True:
+    print(Baka.get_headers())
+```
 # Types
 
 - `html`
@@ -95,25 +109,32 @@ run()
 # Example
 
 ```py
-from baka import run , add_path , add_path_type , add_render , render_template
 from baka import Config
+from baka import Baka , run
+import threading
 
-Config.hibyemessage = False
+Config.hi_bye_message = False
 
-add_path("/")
-add_path_type("/" , "html")
-add_render("/" , render_template("index.html"))
+Baka.add_path("/")
+Baka.add_path_type("/" , "html")
+Baka.add_render("/" , Baka.render_template("index.html"))
 
-add_path("/favicon.ico")
-add_path_type("/favicon.ico", "special")
-add_render("/favicon.ico" , render_template("fav.html"))
+Baka.add_path("/favicon.ico")
+Baka.add_path_type("/favicon.ico", "special")
+Baka.add_render("/favicon.ico" , Baka.render_template("fav.html"))
 
-add_path("/test")
-add_path_type("/test" , "json")
+Baka.add_path("/test")
+Baka.add_path_type("/test" , "json")
+
 a = {
     "hello" : "b",
     "wow" : "dang lol"
     }
-add_render("/test" , a)
-run()
+Baka.add_render("/test" , a)
+
+th = threading.Thread(target=run)
+th.daemon = True
+th.run()
+while True:
+    print(Baka.get_headers())
 ```
