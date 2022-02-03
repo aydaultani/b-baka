@@ -2,6 +2,18 @@
 
 A simple and lightweight web framework for beginners.
 
+## TODO
+
+- [x] GET
+- [x] POST
+- [x] PATH
+- [x] 404
+- [ ] CORS
+- [ ] Hot reload
+- [ ] Denying Certain Reqs
+- [ ] Database LIB
+- [ ] PyPi
+
 ## Config
 
 There are 4 config options.
