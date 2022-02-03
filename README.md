@@ -1,4 +1,4 @@
-# B-baka
+# B-baka!
 
 A simple and lightweight web framework for beginners.
 
