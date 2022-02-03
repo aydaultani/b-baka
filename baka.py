@@ -1,7 +1,8 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
 import logging
 import random
-import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 
 class StartsWithError(Exception):
     pass
@@ -97,17 +98,18 @@ def render_template(filename : str):
         return file.read()
 
 def run():
-        hostName = Config.hostname
-        serverPort = Config.port
-        webServer = HTTPServer((hostName, serverPort), Baka)
-        if Config.hibyemessage: print(random.choice(himessage))
-        print("Server started at http://%s:%s" % (hostName, serverPort))
+    hostName = Config.hostname
+    serverPort = Config.port
+    webServer = HTTPServer((hostName, serverPort), Baka)
+    if Config.hibyemessage: print(random.choice(himessage))
+    print("Server started at http://%s:%s" % (hostName, serverPort))
 
-        try:
-            webServer.serve_forever()
-        except KeyboardInterrupt:
-            pass
+    try:
+        webServer.serve_forever()
+    except KeyboardInterrupt:
+        pass
 
-        webServer.server_close()
-        if Config.hibyemessage: print(random.choice(byemessage))
-        print("Server stopped.")
+    webServer.server_close()
+    if Config.hibyemessage: print(random.choice(byemessage))
+    print("Server stopped.")
+
