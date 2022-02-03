@@ -1,8 +1,9 @@
+from email import header
 import json
 import logging
 import random
 from http.server import BaseHTTPRequestHandler, HTTPServer
-
+import threading
 
 class StartsWithError(Exception):
     pass
@@ -21,6 +22,7 @@ class Baka(BaseHTTPRequestHandler):
     global to_render
     global hi_message
     global bye_message
+    global headers
 
     bye_message = [
         "why awe you weaving *looks at you* me :( bye bye",
@@ -36,8 +38,8 @@ class Baka(BaseHTTPRequestHandler):
 
     path_list = []
     patht = []
-    foo = []
     to_render = []
+    headers = []
 
     def do_GET(self):
         path_type = None
@@ -94,25 +96,33 @@ class Baka(BaseHTTPRequestHandler):
             if Config.error_logging:
                 logging.log(40, f"Error path {self.path} not found")
 
+    def do_POST(self):
+        logging.log(100 , dict(self.headers))
+        headers.append(dict(self.headers))
+        
 
-def add_path(pathy: str):
-    if pathy.startswith("/"):
-        path_list.append(pathy)
-    else:
-        raise StartsWithError("Path must start with '/' ")
-
-
-def add_path_type(pathy: str, typey: str):
-    patht.append({pathy: typey})
+    def get_headers():
+        return headers
 
 
-def add_render(pathy: str, daty: str):
-    to_render.append({pathy: daty})
+    def add_path(pathy: str):
+        if pathy.startswith("/"):
+            path_list.append(pathy)
+        else:
+            raise StartsWithError("Path must start with '/' ")
 
 
-def render_template(filename: str):
-    with open(filename, "r") as file:
-        return file.read()
+    def add_path_type(pathy: str, typey: str):
+        patht.append({pathy: typey})
+
+
+    def add_render(pathy: str, daty: str):
+        to_render.append({pathy: daty})
+
+
+    def render_template(filename: str):
+        with open(filename, "r") as file:
+            return file.read()
 
 
 def run():
@@ -122,7 +132,8 @@ def run():
     if Config.hi_bye_message:
         print(random.choice(hi_message))
     print("Server started at http://%s:%s" % (host_name, server_port))
-
+    
+    
     try:
         web_server.serve_forever()
     except KeyboardInterrupt:
