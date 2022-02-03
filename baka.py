@@ -7,109 +7,128 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 class StartsWithError(Exception):
     pass
 
+
 class Config:
-    hibyemessage = True
-    errorlogging = True
-    hostname = "localhost"
+    hi_bye_message = True
+    error_logging = True
+    host_name = "localhost"
     port = 8080
 
+
 class Baka(BaseHTTPRequestHandler):
-    global pathlist
+    global path_list
     global patht
-    global torender
-    global himessage
-    global byemessage
+    global to_render
+    global hi_message
+    global bye_message
 
-    byemessage = ["why awe you weaving *looks at you* me :( bye bye" , "pwease dont go" , "bye f-f-fwen" , "dont go wuv"]
-    himessage = ["hi sewvews wunnying nyow *whispers to self* :p *runs away*" , "omg hi how awe y-you!!11" , "whats up f-f-fwen"]
+    bye_message = [
+        "why awe you weaving *looks at you* me :( bye bye",
+        "pwease dont go",
+        "bye f-f-fwen",
+        "dont go wuv",
+    ]
+    hi_message = [
+        "hi sewvews wunnying nyow *whispers to self* :p *runs away*",
+        "omg hi how awe y-you!!11",
+        "whats up f-f-fwen",
+    ]
 
-    pathlist = []
+    path_list = []
     patht = []
     foo = []
-    torender = []
+    to_render = []
 
     def do_GET(self):
-        pathtype = None
-        if self.path in pathlist:
+        path_type = None
+        if self.path in path_list:
 
             for item in patht:
                 try:
-                    pathtype = item[self.path]
-                    break;
+                    path_type = item[self.path]
+                    break
                 except:
                     pass
-            for i in torender:
+            for i in to_render:
                 try:
                     value = i[self.path]
-                    break;
+                    break
                 except:
                     pass
 
-            if pathtype == "html":
+            if path_type == "html":
                 self.send_response(200)
-                self.send_header("Content-type" , "text/html")
+                self.send_header("Content-type", "text/html")
                 self.end_headers()
                 try:
-                    self.wfile.write(bytes(value , "utf-8"))
+                    self.wfile.write(bytes(value, "utf-8"))
                 except:
                     pass
-            elif pathtype == "special":
+            elif path_type == "special":
                 self.send_response(200)
-                self.send_header("Content-type" , "text/html")
+                self.send_header("Content-type", "text/html")
                 self.end_headers()
                 try:
-                    self.wfile.write(bytes(value , "utf-8"))
+                    self.wfile.write(bytes(value, "utf-8"))
                 except:
                     pass
-            elif pathtype == "json":
+            elif path_type == "json":
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
+                self.send_header("Content-Type", "application/json")
                 self.end_headers()
-                self.wfile.write(str(value).encode(encoding='utf_8'))
+                self.wfile.write(str(value).encode(encoding="utf_8"))
             else:
-                if Config.errorlogging:
-                    logging.log(40 , f" Error '{self.path}', can't find path type '{pathtype}'")
+                if Config.error_logging:
+                    logging.log(
+                        40, f" Error '{self.path}', can't find path type '{path_type}'"
+                    )
                 self.send_response(400)
-                self.send_header("Content-type" , "text/html")
+                self.send_header("Content-type", "text/html")
                 self.end_headers()
-                self.wfile.write(bytes("<h1>Error!</h1>" , "utf-8"))
+                self.wfile.write(bytes("<h1>Error!</h1>", "utf-8"))
         else:
             self.send_response(404)
-            self.send_header("Content-type" , "text/html")
+            self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write(bytes("<h1>404 Not found</h1>" , "utf-8"))
-            if Config.errorlogging:
-                logging.log(40 , f"Error path {self.path} not found")
+            self.wfile.write(bytes("<h1>404 Not found</h1>", "utf-8"))
+            if Config.error_logging:
+                logging.log(40, f"Error path {self.path} not found")
 
-def add_path(pathy : str):
+
+def add_path(pathy: str):
     if pathy.startswith("/"):
-        pathlist.append(pathy)
+        path_list.append(pathy)
     else:
         raise StartsWithError("Path must start with '/' ")
 
-def add_path_type(pathy : str , typey : str):
-    patht.append({pathy : typey})
 
-def add_render(pathy : str , daty : str):
-    torender.append({pathy : daty})
+def add_path_type(pathy: str, typey: str):
+    patht.append({pathy: typey})
 
-def render_template(filename : str):
-    with open(filename , "r") as file:
+
+def add_render(pathy: str, daty: str):
+    to_render.append({pathy: daty})
+
+
+def render_template(filename: str):
+    with open(filename, "r") as file:
         return file.read()
 
+
 def run():
-    hostName = Config.hostname
-    serverPort = Config.port
-    webServer = HTTPServer((hostName, serverPort), Baka)
-    if Config.hibyemessage: print(random.choice(himessage))
-    print("Server started at http://%s:%s" % (hostName, serverPort))
+    host_name = Config.hostname
+    server_port = Config.port
+    web_server = HTTPServer((host_name, server_port), Baka)
+    if Config.hibyemessage:
+        print(random.choice(hi_message))
+    print("Server started at http://%s:%s" % (host_name, server_port))
 
     try:
-        webServer.serve_forever()
+        web_server.serve_forever()
     except KeyboardInterrupt:
         pass
 
-    webServer.server_close()
-    if Config.hibyemessage: print(random.choice(byemessage))
+    web_server.server_close()
+    if Config.hibyemessage:
+        print(random.choice(bye_message))
     print("Server stopped.")
-
