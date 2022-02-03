@@ -116,10 +116,10 @@ def render_template(filename: str):
 
 
 def run():
-    host_name = Config.hostname
+    host_name = Config.host_name
     server_port = Config.port
     web_server = HTTPServer((host_name, server_port), Baka)
-    if Config.hibyemessage:
+    if Config.hi_bye_message:
         print(random.choice(hi_message))
     print("Server started at http://%s:%s" % (host_name, server_port))
 
@@ -129,6 +129,6 @@ def run():
         pass
 
     web_server.server_close()
-    if Config.hibyemessage:
+    if Config.hi_bye_message:
         print(random.choice(bye_message))
     print("Server stopped.")
