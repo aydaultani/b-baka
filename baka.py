@@ -3,6 +3,7 @@ import logging
 import random
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+
 class StartsWithError(Exception):
     pass
 
