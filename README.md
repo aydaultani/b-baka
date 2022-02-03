@@ -11,9 +11,9 @@ There are 4 config options.
 - `hostname`
 - `port`
 
-The first two are `bool`'s, the third one is a string and the fourth is an integer.
+The first two are booleans (`bool`) , the third one is a string and the fourth is an integer (`int`).
 
-They can be changed by doing the following
+They can be changed by doing the following:
 
 ```py
 from baka import Config
