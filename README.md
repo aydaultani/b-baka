@@ -16,7 +16,7 @@ A simple and lightweight web framework for beginners.
 - [x] Path Params
 - [ ] Return Headers
 - [ ] Hot reload
-- [ ] Denying Certain Reqs
+- [x] Denying Certain Reqs
 - [ ] Database LIB
 - [ ] PyPi
 

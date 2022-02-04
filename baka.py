@@ -15,7 +15,7 @@ class Baka(BaseHTTPRequestHandler):
     global bye_message
     global headers
     global params
-    global base
+    global req_type
     
 
     bye_message = [
@@ -35,88 +35,122 @@ class Baka(BaseHTTPRequestHandler):
     to_render = []
     headers = []
     params = []
+    req_type = []
 
     def do_GET(self):
-        a = []
+        req = None
         path_type = None
-        if self.path.split("?")[0] in path_list:
+        value = None
 
-            for item in patht:
-                try:
-                    path_type = item[self.path.split("?")[0]]
-                    break
-                except:
-                    logging.log(100 , item[self.path.split("?")[0]])
-                    #logging.log(100 , item[str if str.startswith(self.path) else None])
-                    pass
-
-
-            for i in to_render:
-                try:
-                    value = i[self.path.split("?")[0]]
-                    break
-                except:
-                    pass
-            
-
-
-            if path_type == "html":
-                self.send_response(200)
-                self.send_header("Content-type", "text/html")
-                if Config.CORS_HTML:
-                    self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                try:
-                    self.wfile.write(bytes(value, "utf-8"))
-                except:
-                    pass
-            elif path_type == "special":
-                self.send_response(200)
-                self.send_header("Content-type", "text/html")
-                self.end_headers()
-                try:
-                    self.wfile.write(bytes(value, "utf-8"))
-                except:
-                    pass
-            elif path_type == "json":
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                if Config.CORS:
-                    self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(str(value).encode(encoding="utf_8"))
-            else:
-                if Config.error_logging:
-                    logging.log(
-                        40, f" Error '{self.path}', can't find path type '{path_type}'"
-                    )
-                self.send_response(400)
-                self.send_header("Content-type", "text/html")
-                self.end_headers()
-                self.wfile.write(bytes("<h1>Error!</h1>", "utf-8"))
-                        
+        for item in req_type:
             try:
-                query = urlparse(self.path).query
-                query_components = dict(qc.split("=") for qc in query.split("&"))
-                if query_components == []:
+                req = item[self.path.split("?")[0]]
+
+                break
+            except:
+                #logging.log(100 , item[self.path.split("?")[0]])
+                #logging.log(100 , item[str if str.startswith(self.path) else None])
+                pass
+
+        if req == "GET":
+            if self.path.split("?")[0] in path_list:
+
+                for item in patht:
+                    try:
+                        path_type = item[self.path.split("?")[0]]
+                        break
+                    except:
+                        logging.log(100 , item[self.path.split("?")[0]])
+                        #logging.log(100 , item[str if str.startswith(self.path) else None])
+                        pass
+                
+
+                for i in to_render:
+                    try:
+                        value = i[self.path.split("?")[0]]
+                        break
+                    except:
+                        pass
+
+                if path_type == "html":
+                    self.send_response(200)
+                    self.send_header("Content-type", "text/html")
+                    if Config.CORS_HTML:
+                        self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    try:
+                        self.wfile.write(bytes(value, "utf-8"))
+                    except:
+                        pass
+                elif path_type == "special":
+                    self.send_response(200)
+                    self.send_header("Content-type", "text/html")
+                    self.end_headers()
+                    try:
+                        self.wfile.write(bytes(value, "utf-8"))
+                    except:
+                        pass
+                elif path_type == "json":
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json")
+                    if Config.CORS:
+                        self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    self.wfile.write(str(value).encode(encoding="utf_8"))
+                else:
+                    if Config.error_logging:
+                        logging.log(
+                            40, f" Error '{self.path}', can't find path type '{path_type}'"
+                        )
+                    self.send_response(400)
+                    self.send_header("Content-type", "text/html")
+                    self.end_headers()
+                    self.wfile.write(bytes("<h1>Error!</h1>", "utf-8"))
+                            
+                try:
+                    query = urlparse(self.path).query
+                    query_components = dict(qc.split("=") for qc in query.split("&"))
+                    if query_components == []:
+                        pass
+                    else:
+                        params.clear()
+                        params.append(query_components)
+                except:
                     pass
                 else:
-                    params.clear()
-                    params.append(query_components)
-            except:
-                pass
+                    self.send_response(404)
+                    self.send_header("Content-type", "text/html")
+                    self.end_headers()
+                    self.wfile.write(bytes("<h1>404 Not found</h1>", "utf-8"))
+                    if Config.error_logging:
+                        logging.log(40, f"Error path {self.path} not found")
         else:
             self.send_response(404)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            self.wfile.write(bytes("<h1>404 Not found</h1>", "utf-8"))
+            self.wfile.write(bytes("<h1>Method not allowed</h1>", "utf-8"))
             if Config.error_logging:
-                logging.log(40, f"Error path {self.path} not found")
+                logging.log(40, f"Error method not allowed")           
 
 
     def do_POST(self):
-        logging.log(100 , dict(self.headers))
-        headers.append(dict(self.headers))
+        for item in req_type:
+            try:
+                req = item[self.path.split("?")[0]]
+                break
+            except:
+                pass
+        if req == "POST":
+            #logging.log(100 , dict(self.headers))
+            headers.append(dict(self.headers))
+        else:
+            self.send_response(404)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(bytes("<h1>Method not allowed</h1>", "utf-8"))
+            if Config.error_logging:
+                logging.log(40, f"Error method not allowed")   
+
         
 
     def get_headers():
@@ -137,6 +171,8 @@ class Baka(BaseHTTPRequestHandler):
     def add_render(pathy: str, daty: str):
         to_render.append({pathy: daty})
 
+    def add_req_type(pathy : str , typey : str):
+        req_type.append({pathy : typey})
 
     def render_template(filename: str):
         with open(filename, "r") as file:
