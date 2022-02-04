@@ -1,0 +1,2 @@
+class StartsWithError(Exception):
+    pass

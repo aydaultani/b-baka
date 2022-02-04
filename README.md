@@ -8,7 +8,13 @@ A simple and lightweight web framework for beginners.
 - [x] POST
 - [x] PATH
 - [x] 404
-- [ ] CORS
+- [x] CORS
+- [x] Json
+- [x] HTML
+- [x] Get Headers
+- [x] Better File System
+- [x] Path Params
+- [ ] Return Headers
 - [ ] Hot reload
 - [ ] Denying Certain Reqs
 - [ ] Database LIB
@@ -16,23 +22,27 @@ A simple and lightweight web framework for beginners.
 
 ## Config
 
-There are 4 config options.
+There are 6 config options.
 
-- `hidebymessage`
-- `errorlogging`
-- `hostname`
+- `hi_bye_message`
+- `error_logging`
+- `host_name`
 - `port`
+- `CORS`
+- `CORS_HTML`
 
-The first two are booleans (`bool`) , the third one is a string and the fourth is an integer (`int`).
+The first two and the last two are booleans (`bool`) , the third one is a string and the fourth is an integer (`int`).
 
 They can be changed by doing the following:
 
 ```py
 from baka import Config
-Config.hidebymessage = False
-Config.errorlogging = False
-Config.hostname =  "hostnamehere"
+Config.hi_bye_message = False
+Config.error_logging = False
+Config.host_name =  "hostnamehere"
 Config.port = "4000"
+Config.CORS = True
+Config.CORS_HTML = True
 ```
 
 # Baka
@@ -108,10 +118,12 @@ import threading
 . . . # normal code here
 th = threading.Thread(target=run)
 th.daemon = True
-th.run()
+th.start()
 while True:
-    print(Baka.get_headers())
+    print(Baka.get_params())
 ```
+And similarly for Get Params from URLs
+
 # Types
 
 - `html`
@@ -121,15 +133,16 @@ while True:
 # Example
 
 ```py
-from baka import Config
+from config import Config
 from baka import Baka , run
-import threading
+import threading # for getting headers
 
-Config.hi_bye_message = False
+Config.hi_bye_message = False # disable uwu messages
+Config.CORS = True # enable CORS for json
 
-Baka.add_path("/")
-Baka.add_path_type("/" , "html")
-Baka.add_render("/" , Baka.render_template("index.html"))
+Baka.add_path("/") # add route
+Baka.add_path_type("/" , "html") # add type
+Baka.add_render("/" , Baka.render_template("index.html")) #render an html file
 
 Baka.add_path("/favicon.ico")
 Baka.add_path_type("/favicon.ico", "special")
@@ -144,9 +157,9 @@ a = {
     }
 Baka.add_render("/test" , a)
 
-th = threading.Thread(target=run)
+th = threading.Thread(target=run) 
 th.daemon = True
-th.run()
+th.start() # run server in thread
 while True:
-    print(Baka.get_headers())
+    print(Baka.get_headers()) # get headers on POST
 ```

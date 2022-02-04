@@ -2,17 +2,10 @@ import json
 import logging
 import random
 from http.server import BaseHTTPRequestHandler, HTTPServer
-
-class StartsWithError(Exception):
-    pass
-
-
-class Config:
-    hi_bye_message = True
-    error_logging = True
-    host_name = "localhost"
-    port = 8080
-
+from sqlite3 import paramstyle
+from config import Config
+from error import StartsWithError
+from urllib.parse import urlparse , parse_qs
 
 class Baka(BaseHTTPRequestHandler):
     global path_list
@@ -21,6 +14,9 @@ class Baka(BaseHTTPRequestHandler):
     global hi_message
     global bye_message
     global headers
+    global params
+    global base
+    
 
     bye_message = [
         "why awe you weaving *looks at you* me :( bye bye",
@@ -38,27 +34,37 @@ class Baka(BaseHTTPRequestHandler):
     patht = []
     to_render = []
     headers = []
+    params = []
 
     def do_GET(self):
+        a = []
         path_type = None
-        if self.path in path_list:
+        if self.path.split("?")[0] in path_list:
 
             for item in patht:
                 try:
-                    path_type = item[self.path]
+                    path_type = item[self.path.split("?")[0]]
                     break
                 except:
+                    logging.log(100 , item[self.path.split("?")[0]])
+                    #logging.log(100 , item[str if str.startswith(self.path) else None])
                     pass
+
+
             for i in to_render:
                 try:
-                    value = i[self.path]
+                    value = i[self.path.split("?")[0]]
                     break
                 except:
                     pass
+            
+
 
             if path_type == "html":
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")
+                if Config.CORS_HTML:
+                    self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
                 try:
                     self.wfile.write(bytes(value, "utf-8"))
@@ -75,6 +81,8 @@ class Baka(BaseHTTPRequestHandler):
             elif path_type == "json":
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
+                if Config.CORS:
+                    self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
                 self.wfile.write(str(value).encode(encoding="utf_8"))
             else:
@@ -86,6 +94,17 @@ class Baka(BaseHTTPRequestHandler):
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
                 self.wfile.write(bytes("<h1>Error!</h1>", "utf-8"))
+                        
+            try:
+                query = urlparse(self.path).query
+                query_components = dict(qc.split("=") for qc in query.split("&"))
+                if query_components == []:
+                    pass
+                else:
+                    params.clear()
+                    params.append(query_components)
+            except:
+                pass
         else:
             self.send_response(404)
             self.send_header("Content-type", "text/html")
@@ -93,6 +112,7 @@ class Baka(BaseHTTPRequestHandler):
             self.wfile.write(bytes("<h1>404 Not found</h1>", "utf-8"))
             if Config.error_logging:
                 logging.log(40, f"Error path {self.path} not found")
+
 
     def do_POST(self):
         logging.log(100 , dict(self.headers))
@@ -122,6 +142,9 @@ class Baka(BaseHTTPRequestHandler):
         with open(filename, "r") as file:
             return file.read()
 
+
+    def get_params():
+        return params
 
 def run():
     host_name = Config.host_name
