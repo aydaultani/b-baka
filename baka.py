@@ -1,9 +1,7 @@
-from email import header
 import json
 import logging
 import random
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import threading
 
 class StartsWithError(Exception):
     pass
