@@ -1,6 +1,9 @@
-import json
-import logging
-import random
+import (
+    json,
+    logging,
+    random,
+)
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from sqlite3 import paramstyle
 from config import Config
