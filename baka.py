@@ -8,15 +8,16 @@ from error import StartsWithError
 from urllib.parse import urlparse , parse_qs
 
 class Baka(BaseHTTPRequestHandler):
-    global path_list
-    global patht
-    global to_render
-    global hi_message
-    global bye_message
-    global headers
-    global params
-    global req_type
-    
+    global (
+        path_list,
+        patht,
+        to_render,
+        hi_message,
+        bye_message,
+        headers,
+        params,
+        req_type
+    )
 
     bye_message = [
         "why awe you weaving *looks at you* me :( bye bye",
@@ -62,15 +63,15 @@ class Baka(BaseHTTPRequestHandler):
                     except:
                         logging.log(100 , item[self.path.split("?")[0]])
                         #logging.log(100 , item[str if str.startswith(self.path) else None])
-                        pass
+                        # pass
                 
 
                 for i in to_render:
                     try:
                         value = i[self.path.split("?")[0]]
                         break
-                    except:
-                        pass
+                        
+                    except: pass
 
                 if path_type == "html":
                     self.send_response(200)
@@ -80,16 +81,16 @@ class Baka(BaseHTTPRequestHandler):
                     self.end_headers()
                     try:
                         self.wfile.write(bytes(value, "utf-8"))
-                    except:
-                        pass
+                    except: pass
+                    
                 elif path_type == "special":
                     self.send_response(200)
                     self.send_header("Content-type", "text/html")
                     self.end_headers()
                     try:
                         self.wfile.write(bytes(value, "utf-8"))
-                    except:
-                        pass
+                    except: pass
+                    
                 elif path_type == "json":
                     self.send_response(200)
                     self.send_header("Content-Type", "application/json")
@@ -102,6 +103,7 @@ class Baka(BaseHTTPRequestHandler):
                         logging.log(
                             40, f" Error '{self.path}', can't find path type '{path_type}'"
                         )
+                        
                     self.send_response(400)
                     self.send_header("Content-type", "text/html")
                     self.end_headers()
@@ -115,8 +117,9 @@ class Baka(BaseHTTPRequestHandler):
                     else:
                         params.clear()
                         params.append(query_components)
-                except:
-                    pass
+                        
+                except: pass
+                
                 else:
                     self.send_response(404)
                     self.send_header("Content-type", "text/html")
@@ -138,8 +141,8 @@ class Baka(BaseHTTPRequestHandler):
             try:
                 req = item[self.path.split("?")[0]]
                 break
-            except:
-                pass
+            except: pass
+            
         if req == "POST":
             #logging.log(100 , dict(self.headers))
             headers.append(dict(self.headers))
@@ -148,10 +151,10 @@ class Baka(BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(bytes("<h1>Method not allowed</h1>", "utf-8"))
+            
             if Config.error_logging:
                 logging.log(40, f"Error method not allowed")   
 
-        
 
     def get_headers():
         return headers
@@ -193,8 +196,8 @@ def run():
     
     try:
         web_server.serve_forever()
-    except KeyboardInterrupt:
-        pass
+        
+    except KeyboardInterrupt: pass
 
     web_server.server_close()
     if Config.hi_bye_message:
