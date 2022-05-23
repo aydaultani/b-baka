@@ -155,29 +155,36 @@ class Baka(BaseHTTPRequestHandler):
 
     def get_headers():
         return headers
-
-
-    def add_path(pathy: str):
-        if pathy.startswith("/"):
-            path_list.append(pathy)
-        else:
-            raise StartsWithError("Path must start with '/' ")
-
-
-    def add_path_type(pathy: str, typey: str):
+    
+    def add_path(pathy: str, typey: str, daty: str):
+        if not pathy.startswith("/"):
+            raise StartsWithError('Path must start with "/"')
+        
+        # else(aka if it starts with /)
+        path_list.append(pathy)
         patht.append({pathy: typey})
-
-
-    def add_render(pathy: str, daty: str):
-        to_render.append({pathy: daty})
-
-    def add_req_type(pathy : str , typey : str):
         req_type.append({pathy : typey})
+        to_render.append({pathy: daty})
+        
+#     def add_path(pathy: str):
+#         if pathy.startswith("/"):
+#             path_list.append(pathy)
+#         else:
+#             raise StartsWithError("Path must start with '/' ")
+
+#     def add_path_type(pathy: str, typey: str):
+#         patht.append({pathy: typey})
+
+
+#     def add_render(pathy: str, daty: str):
+#         to_render.append({pathy: daty})
+
+#     def add_req_type(pathy : str , typey : str):
+#         req_type.append({pathy : typey})
 
     def render_template(filename: str):
         with open(filename, "r") as file:
             return file.read()
-
 
     def get_params():
         return params
@@ -186,10 +193,11 @@ def run():
     host_name = Config.host_name
     server_port = Config.port
     web_server = HTTPServer((host_name, server_port), Baka)
+    
     if Config.hi_bye_message:
         print(random.choice(hi_message))
+        
     print("Server started at http://%s:%s" % (host_name, server_port))
-    
     
     try:
         web_server.serve_forever()
@@ -197,6 +205,8 @@ def run():
         pass
 
     web_server.server_close()
+    
     if Config.hi_bye_message:
         print(random.choice(bye_message))
+        
     print("Server stopped.")
