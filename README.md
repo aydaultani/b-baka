@@ -47,47 +47,28 @@ Config.CORS_HTML = True
 
 # Baka
 
-There are only 6 simple functions.
+There are only 4 simple functions.
 
 ## - `add_path`
 
 ### Adds a certain endpoint to the path list
+#### Takes in 3 arguments (pathy, typey, daty) all of them should be string types
 
+`pathy`: path of the url
+`typey`: type that this route will work on
+`daty`: The data to render, can be python dict, string or render_template(`index.html`)
+
+### `Usage`
 ```py
-add_path("/")
-add_path("/api")
-add_path("/home")
-add_path("/login")
-```
- 
-## - `add_path_type`
+add_path("/", "html", render_template("index.html"))
+add_path("/html_route", "html", "<h1>Hello, World!</h1>")
 
-### Add the type of the path
-
-```py
-add_path_type("/" , "html")
-add_path_type("/api" , "json")
-add_path_type("/login" , "html")
-```
-
-## - `add_render`
-
-### Used to render things
-
-```py
-add_render("/" , render_template("index.html"))
-```
-
-```py
-add_render("/" , "<h1>Hello!</h1>")
-```
-
-```py
-a = {
+dict_to_return = {
     "hello" : "b",
-    "wow" : "dang lol"
-    }
-add_render("/test" , a)
+    "wow" : "dang lol",
+}
+
+add_path("/api", "json", dict_to_return)
 ```
 
 ## - `render_template`
